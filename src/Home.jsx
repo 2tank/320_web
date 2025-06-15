@@ -6,15 +6,25 @@ function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitHovered, setSubmitHovered] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSmallMobile, setIsSmallMobile] = useState(false);
 
-  // Añadir este useEffect para cambiar el título de la página
+  // Detector de tamaño de pantalla para mejor responsividad
   useEffect(() => {
-    // Guardar el título anterior para restaurarlo cuando se desmonte el componente
-    const prevTitle = document.title;
-    // Establecer el nuevo título
-    document.title = "320 - Home";
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsSmallMobile(window.innerWidth <= 480);
+    };
     
-    // Cleanup function para restaurar el título original cuando el componente se desmonte
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Cambiar título de la página
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = "320 - Home";
     return () => {
       document.title = prevTitle;
     };
@@ -23,7 +33,6 @@ function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simular envío de formulario
     setTimeout(() => {
       setIsSubmitting(false);
       setEmail("");
@@ -31,61 +40,96 @@ function Home() {
     }, 1000);
   };
 
-  // Resto del código permanece igual...
   return (
     <div style={styles.container}>
       <Header />
-      <main style={styles.content}>
+      <main style={{
+        ...styles.content,
+        paddingTop: isSmallMobile ? "90px" : isMobile ? "110px" : "150px"
+      }}>
         <section style={styles.left}>
-          <h2 style={styles.campusMessage}>Tu campus hecho comunidad</h2>
-          <h3 style={styles.mainHeading}>
+          <h2 style={{
+            ...styles.campusMessage,
+            fontSize: isSmallMobile ? "32px" : "clamp(32px, 5.5vw, 52px)" // Más grande
+          }}>Tu campus hecho comunidad</h2>
+          <h3 style={{
+            ...styles.mainHeading,
+            fontSize: isSmallMobile ? "22px" : "clamp(22px, 3.5vw, 36px)" // Más grande
+          }}>
             🎓 La única red social universitaria que conecta con tus verdaderos intereses
           </h3>
-          <div style={styles.features}>
+          <div style={{
+            ...styles.features,
+            gap: isSmallMobile ? "14px" : "clamp(16px, 2.5vh, 26px)" // Más espacio
+          }}>
             <div style={styles.featureItem}>
-              <span style={styles.emoji}>✨</span>
-              <span>
+              <span style={{
+                ...styles.emoji,
+                fontSize: isSmallMobile ? "20px" : "clamp(20px, 3vw, 30px)" // Emoji más grande
+              }}>✨</span>
+              <span style={styles.featureText}>
                 <strong>Conexiones Diarias:</strong> cada mañana, recomendaciones basadas en tu actividad e intereses reales.
               </span>
             </div>
             <div style={styles.featureItem}>
-              <span style={styles.emoji}>💬</span>
-              <span>
+              <span style={{
+                ...styles.emoji,
+                fontSize: isSmallMobile ? "20px" : "clamp(20px, 3vw, 30px)"
+              }}>💬</span>
+              <span style={styles.featureText}>
                 <strong>Círculos Temáticos:</strong> únete a comunidades donde tus intereses y proyectos cobran vida.
               </span>
             </div>
             <div style={styles.featureItem}>
-              <span style={styles.emoji}>📅</span>
-              <span>
+              <span style={{
+                ...styles.emoji,
+                fontSize: isSmallMobile ? "20px" : "clamp(20px, 3vw, 30px)"
+              }}>📅</span>
+              <span style={styles.featureText}>
                 <strong>Tablón de actividades:</strong> no te pierdas ningún evento relevante de tu campus.
               </span>
             </div>
           </div>
         </section>
 
-        {/* Sección derecha: wishlist privilegiada con Formspree */}
         <section style={styles.right}>
-          <div style={styles.wishlistContainer}>
-            <h4 style={styles.wishlistHeading}>🎯 Apúntate a nuestra wishlist</h4>
-            <p style={styles.wishlistSubheading}>Los primeros serán los privilegiados</p>
+          <div style={{
+            ...styles.wishlistContainer,
+            padding: isSmallMobile ? "30px 20px" : "clamp(30px, 6vw, 50px)" // Más padding
+          }}>
+            <h4 style={{
+              ...styles.wishlistHeading,
+              fontSize: isSmallMobile ? "24px" : "clamp(24px, 3.5vw, 34px)" // Más grande
+            }}>🎯 Apúntate a nuestra wishlist</h4>
+            <p style={{
+              ...styles.wishlistSubheading,
+              fontSize: isSmallMobile ? "17px" : "clamp(17px, 2vw, 20px)", // Más grande
+              margin: "0 0 clamp(24px, 4vh, 36px)" // Más espacio
+            }}>Los primeros serán los privilegiados</p>
+            
             <form
               action="https://formspree.io/f/mvgrrbvp"
               method="POST"
-              style={styles.wishlistForm}
+              style={{
+                ...styles.wishlistForm,
+                gap: "clamp(20px, 3vh, 30px)" // Más espacio
+              }}
               onSubmit={handleSubmit}
             >
               <div style={styles.inputWrapper}>
                 <input
                   name="email"
                   type="email"
-                  placeholder="ejemplo@uma.es"
+                  placeholder={isSmallMobile ? "Email" : "ejemplo@uma.es"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
                   style={{
                     ...styles.wishlistInput,
-                    ...(inputFocused ? styles.wishlistInputFocused : {})
+                    ...(inputFocused ? styles.wishlistInputFocused : {}),
+                    fontSize: isSmallMobile ? "17px" : "clamp(17px, 2vw, 19px)", // Más grande
+                    padding: isSmallMobile ? "14px 16px" : "16px 20px" // Más padding
                   }}
                   required
                 />
@@ -95,18 +139,33 @@ function Home() {
                 style={{
                   ...styles.wishlistButton,
                   ...(submitHovered ? styles.wishlistButtonHover : {}),
-                  ...(isSubmitting ? styles.wishlistButtonSubmitting : {})
+                  ...(isSubmitting ? styles.wishlistButtonSubmitting : {}),
+                  fontSize: isSmallMobile ? "17px" : "clamp(17px, 2vw, 19px)", // Más grande
+                  padding: isSmallMobile ? "14px 16px" : "18px 24px", // Más padding
+                  fontWeight: 800 // Más negrita para destacar
                 }}
                 onMouseEnter={() => setSubmitHovered(true)}
                 onMouseLeave={() => setSubmitHovered(false)}
+                onTouchStart={() => setSubmitHovered(true)} 
+                onTouchEnd={() => setSubmitHovered(false)}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Enviando..." : "¡Apúntame!"}
               </button>
             </form>
-            <div style={styles.benefitsContainer}>
-              <div style={styles.benefitItem}>
-                <span style={styles.benefitIcon}>⚡</span>
+            <div style={{
+              ...styles.benefitsContainer,
+              marginTop: "clamp(24px, 4vh, 36px)" // Más espacio
+            }}>
+              <div style={{
+                ...styles.benefitItem,
+                fontSize: isSmallMobile ? "15px" : "clamp(15px, 1.7vw, 17px)", // Más grande
+                padding: "8px 16px" // Más padding
+              }}>
+                <span style={{
+                  ...styles.benefitIcon,
+                  fontSize: isSmallMobile ? "17px" : "clamp(17px, 2vw, 20px)" // Más grande
+                }}>⚡</span>
                 <span>Acceso anticipado</span>
               </div>
             </div>
@@ -119,7 +178,7 @@ function Home() {
 
 const styles = {
   container: {
-    paddingTop: '30vh',
+    paddingTop: '5%',
     backgroundColor: "#000",
     color: "#fff",
     width: "100%",
@@ -138,32 +197,32 @@ const styles = {
     width: "100%", 
     maxWidth: "1200px",
     margin: "0 auto",
-    paddingTop: "clamp(100px, 20vh, 170px)",
-    paddingLeft: "clamp(16px, 5vw, 60px)",
-    paddingRight: "clamp(16px, 5vw, 60px)",
-    paddingBottom: "clamp(40px, 5vh, 80px)",
-    alignItems: "center", // Centrado vertical para mejorar visualmente
+    // paddingTop se gestiona dinámicamente según el tamaño de pantalla
+    paddingLeft: "clamp(20px, 5vw, 60px)", // Aumentado ligeramente
+    paddingRight: "clamp(20px, 5vw, 60px)", // Aumentado ligeramente
+    paddingBottom: "clamp(50px, 6vh, 100px)", // Más espacio abajo
+    alignItems: "flex-start", // Mejor para evitar problemas de alineación
     boxSizing: "border-box",
-    justifyContent: "center", // Cambio a center para mejor comportamiento responsivo
-    gap: "clamp(40px, 8vw, 100px)", // Aumenté el gap para mejor separación
+    justifyContent: "center",
+    gap: "clamp(50px, 8vw, 120px)", // Más espacio entre secciones
   },
   left: {
     flex: "1 1 500px",
     display: "flex",
     flexDirection: "column",
-    gap: "clamp(16px, 3vh, 30px)",
+    gap: "clamp(20px, 3vh, 36px)", // Más espacio entre elementos
     minWidth: "280px",
-    maxWidth: "600px", // Limitado para mantener legibilidad
-    order: 1, // Para control de orden en móvil
+    maxWidth: "600px",
+    order: 1,
   },
   campusMessage: {
-    fontSize: "clamp(28px, 5vw, 48px)",
+    fontSize: "clamp(32px, 5.5vw, 52px)", // Más grande
     fontWeight: 700,
     margin: 0,
     lineHeight: 1.2,
   },
   mainHeading: {
-    fontSize: "clamp(20px, 3vw, 32px)",
+    fontSize: "clamp(22px, 3.5vw, 36px)", // Más grande
     fontWeight: 600,
     margin: 0,
     color: "#fafafa",
@@ -172,20 +231,24 @@ const styles = {
   features: {
     display: "flex",
     flexDirection: "column",
-    gap: "clamp(12px, 2vh, 20px)",
-    marginTop: "clamp(16px, 3vh, 30px)",
+    gap: "clamp(16px, 2.5vh, 26px)", // Más espacio
+    marginTop: "clamp(20px, 3vh, 36px)", // Más espacio
   },
   featureItem: {
     display: "flex",
     alignItems: "flex-start",
-    gap: "clamp(8px, 2vw, 16px)",
-    fontSize: "clamp(15px, 1.8vw, 18px)",
+    gap: "clamp(10px, 2vw, 20px)", // Más espacio
+    fontSize: "clamp(17px, 2vw, 20px)", // Más grande
     lineHeight: 1.5,
   },
+  featureText: {
+    flex: 1,
+    overflowWrap: "break-word", // Para asegurar que no haya desbordamiento
+  },
   emoji: {
-    fontSize: "clamp(18px, 2.5vw, 26px)",
+    fontSize: "clamp(20px, 3vw, 30px)", // Más grande
     flexShrink: 0,
-    width: "32px",
+    width: "40px", // Más amplio para emojis más grandes
     display: "flex",
     justifyContent: "center",
   },
@@ -193,61 +256,53 @@ const styles = {
     flex: "1 1 400px",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center", // Cambio a center para mejor alineación
+    alignItems: "flex-start", // Mejor para alineación
     minWidth: "280px",
-    maxWidth: "450px", // Limitado para mantener el formulario contenido
-    order: 2, // Para control de orden en móvil
+    maxWidth: "480px", // Ligeramente más ancho
+    order: 2,
   },
   wishlistContainer: {
     backgroundColor: "#111",
-    padding: "clamp(24px, 5vw, 40px)",
-    borderRadius: "clamp(12px, 2vw, 20px)",
+    padding: "clamp(30px, 6vw, 50px)", // Más padding
+    borderRadius: "clamp(16px, 2vw, 24px)", // Bordes más suaves
     boxShadow: "0 15px 40px rgba(0,0,0,0.6)",
     width: "100%",
-    textAlign: "center", // Cambio a center para mejor estética
+    textAlign: "center",
     boxSizing: "border-box",
     border: "1px solid #333",
-    background: "linear-gradient(145deg, #111 0%, #1a1a1a 100%)", // Gradiente sutil
-    transform: "translateY(0)",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    "&:hover": {
-      transform: "translateY(-5px)",
-      boxShadow: "0 20px 50px rgba(0,0,0,0.7)",
-    },
+    background: "linear-gradient(145deg, #111 0%, #1a1a1a 100%)",
   },
   wishlistHeading: {
-    fontSize: "clamp(22px, 3vw, 28px)",
+    fontSize: "clamp(24px, 3.5vw, 34px)", // Más grande
     fontWeight: 700,
-    margin: "0 0 clamp(6px, 1.5vh, 12px)",
+    margin: "0 0 clamp(8px, 1.5vh, 16px)",
     background: "linear-gradient(90deg, #fff, #aaa)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
+    backgroundClip: "text", // Para compatibilidad
   },
   wishlistSubheading: {
-    fontSize: "clamp(15px, 1.8vw, 17px)",
-    margin: "0 0 clamp(20px, 4vh, 32px)",
+    fontSize: "clamp(17px, 2vw, 20px)", // Más grande
+    margin: "0 0 clamp(24px, 4vh, 36px)", // Más espacio
     color: "#ccc",
     fontWeight: 400,
   },
   wishlistForm: {
     display: "flex",
     flexDirection: "column",
-    gap: "clamp(16px, 2.5vh, 24px)",
+    gap: "clamp(20px, 3vh, 30px)", // Más espacio
     width: "100%",
   },
   inputWrapper: {
     position: "relative",
     width: "100%",
     transition: "transform 0.2s ease",
-    "&:focus-within": {
-      transform: "scale(1.02)",
-    },
   },
   wishlistInput: {
-    padding: "clamp(12px, 3vh, 18px) clamp(12px, 2vw, 18px)",
-    borderRadius: "clamp(6px, 1vw, 10px)",
+    padding: "16px 20px", // Más padding
+    borderRadius: "clamp(8px, 1vw, 12px)", // Bordes más suaves
     border: "none",
-    fontSize: "clamp(15px, 1.8vw, 17px)",
+    fontSize: "clamp(17px, 2vw, 19px)", // Más grande
     background: "rgba(34, 34, 34, 0.8)",
     color: "#fff",
     outline: "none",
@@ -255,6 +310,7 @@ const styles = {
     boxSizing: "border-box",
     transition: "all 0.3s ease",
     boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+    WebkitAppearance: "none", // Mejor para Safari
   },
   wishlistInputFocused: {
     background: "#2a2a2a",
@@ -264,27 +320,17 @@ const styles = {
     backgroundColor: "#fff",
     color: "#000",
     border: "none",
-    padding: "clamp(12px, 3vh, 18px)",
-    fontWeight: 700,
-    fontSize: "clamp(15px, 1.8vw, 17px)",
-    borderRadius: "clamp(6px, 1vw, 10px)",
+    padding: "18px 24px", // Más padding
+    fontWeight: 800, // Más negrita
+    fontSize: "clamp(17px, 2vw, 19px)", // Más grande
+    borderRadius: "clamp(8px, 1vw, 12px)", // Bordes más suaves
     cursor: "pointer",
     boxShadow: "0 4px 15px rgba(255,255,255,0.15)",
     transition: "all 0.3s ease",
     position: "relative",
     overflow: "hidden",
     zIndex: 1,
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      background: "linear-gradient(45deg, #fff, #e6e6e6)",
-      zIndex: -1,
-      transition: "opacity 0.3s ease",
-    },
+    WebkitTapHighlightColor: "transparent", // Mejor para móviles
   },
   wishlistButtonHover: {
     transform: "translateY(-3px)",
@@ -295,40 +341,25 @@ const styles = {
     cursor: "wait",
   },
   benefitsContainer: {
-    marginTop: "clamp(20px, 4vh, 32px)",
+    marginTop: "clamp(24px, 4vh, 36px)", // Más espacio
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
-    gap: "clamp(10px, 2vw, 20px)",
+    gap: "clamp(12px, 2vw, 24px)", // Más espacio
   },
   benefitItem: {
     display: "flex",
     alignItems: "center",
-    gap: "8px",
-    fontSize: "clamp(13px, 1.5vw, 15px)",
+    gap: "10px", // Más espacio
+    fontSize: "clamp(15px, 1.7vw, 17px)", // Más grande
     color: "#aaa",
-    padding: "clamp(6px, 1vh, 10px) clamp(10px, 1.5vw, 16px)",
+    padding: "8px 16px", // Más padding
     borderRadius: "999px",
     background: "rgba(255,255,255,0.05)",
   },
   benefitIcon: {
-    fontSize: "clamp(14px, 1.8vw, 18px)",
+    fontSize: "clamp(17px, 2vw, 20px)", // Más grande
   },
 };
-
-// Para manejar media queries en inline styles para React
-if (typeof window !== 'undefined') {
-  // Media query para dispositivos móviles pequeños
-  if (window.matchMedia("(max-width: 768px)").matches) {
-    styles.left.order = 1;
-    styles.right.order = 2;
-  }
-  
-  // Media query para dispositivos muy pequeños
-  if (window.matchMedia("(max-width: 480px)").matches) {
-    styles.content.paddingTop = "80px";
-    styles.content.gap = "30px";
-  }
-}
 
 export default Home;
