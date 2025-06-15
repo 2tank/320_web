@@ -120,7 +120,7 @@ function Home() {
                 <input
                   name="email"
                   type="email"
-                  placeholder={isSmallMobile ? "Email" : "ejemplo@uma.es"}
+                  placeholder={isSmallMobile ? "ejemplo@uma.es" : "ejemplo@uma.es"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setInputFocused(true)}
