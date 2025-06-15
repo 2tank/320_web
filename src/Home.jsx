@@ -138,7 +138,7 @@ const styles = {
     width: "100%", 
     maxWidth: "1200px",
     margin: "0 auto",
-    paddingTop: "clamp(100px, 15vh, 170px)",
+    paddingTop: "clamp(100px, 20vh, 170px)",
     paddingLeft: "clamp(16px, 5vw, 60px)",
     paddingRight: "clamp(16px, 5vw, 60px)",
     paddingBottom: "clamp(40px, 5vh, 80px)",
