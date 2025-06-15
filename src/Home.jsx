@@ -119,7 +119,7 @@ function Home() {
 
 const styles = {
   container: {
-    paddingTop: '23vh',
+    paddingTop: '25vh',
     backgroundColor: "#000",
     color: "#fff",
     width: "100%",
