@@ -100,7 +100,7 @@ function Home() {
             <h4 style={{
               ...styles.wishlistHeading,
               fontSize: isSmallMobile ? "24px" : "clamp(24px, 3.5vw, 34px)" // Más grande
-            }}>🎯 Apúntate a nuestra wishlist</h4>
+            }}>🎯 Apúntate a nuestra Whitelist</h4>
             <p style={{
               ...styles.wishlistSubheading,
               fontSize: isSmallMobile ? "17px" : "clamp(17px, 2vw, 20px)", // Más grande
